@@ -5,23 +5,44 @@ from bs4 import BeautifulSoup
 from urllib2 import urlopen
 
 class WebScrapper():
+    """
+    Class to scrap Google Finance web page searching for stock prices.
+
+    WebScrapper class scrap the page using BeautifulSoup4. It reads tags
+    to find stock's price.
+    """
     def __init__(self):
         pass
 
-    # url: Direccion de la pagina web
-    # return: String en formato html de la pagina 
-    def make_soup(self, url):
-        # Abro la direccion con urlopen y con read() leo hasta EOF
-        html = urlopen(url).read()
+    def _make_soup(self, url):
+        """
+        Return html page parsed with lxml parser as a BeautifulSoup object.
+
+        Args:
+            url (str): URL of stock in Google Finance.
+
+        Returns:
+            (BeautifulSoup object): Nested data structure of the web page.
+
+        """
+        html = urlopen(url).read()          # Open URL and read until EOF
         return BeautifulSoup(html, "lxml")
 
-    # url: Direccion de la pagina web
-    # return: Direccion desde raiz de cada tema del foro
     def get_stock_price(self, stk_market, specie):
-        url = 'https://www.google.com/finance?q=' + stk_market + '%20' + specie
-        # Genero el archivo en formato html de la direccion en cuestion
-        soup = self.make_soup(url)
-        # Busco en el archivo todas las etiquetas 'a' que tengan un atributo 
-        # 'class' con valor 'topictitle'
+        """
+        Extract and return stock's price of a given specie in a given market.
+
+        Args:
+            stk_market (str): Market exchange where found the given specie.
+            specie (str): Specie for get stock price.
+
+        Returns:
+            (float): Stock price for given specie.
+            
+        """
+        url = """
+              https://www.google.com/finance?q=%s%20%s
+              """ % (stk_market, specie)
+        soup = self._make_soup(url)
         topics = soup.findAll('meta', {'itemprop' : 'price'})
         return float(topics[0]['content'])
