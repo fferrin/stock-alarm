@@ -40,9 +40,11 @@ class WebScrapper():
             (float): Stock price for given specie.
             
         """
-        url = """
-              https://www.google.com/finance?q=%s%20%s
-              """ % (stk_market, specie)
+        # TODO (fuuccker): Fix formatted output (can't use %s%20%s)
+        if specie == "BMA":
+            url = "https://www.google.com/finance?q=" + stk_market + "%3A" + specie
+        else:
+            url = "https://www.google.com/finance?q=" + stk_market + "%20" + specie
         soup = self._make_soup(url)
         topics = soup.findAll('meta', {'itemprop' : 'price'})
         return float(topics[0]['content'])
