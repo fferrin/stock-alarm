@@ -3,7 +3,7 @@
 
 import smtplib
 
-class Config():
+class Config(object):
     """
     Class to deal with configuration's parameters.
 
@@ -27,7 +27,7 @@ class Config():
 
     def __init__(self, values):
         for item in values:
-            self.get_value(item, values.get(item))
+            self._get_value_of_setting(item, values.get(item))
 
     def _empty_input(self, value):
         """
@@ -45,7 +45,7 @@ class Config():
         else:
             return False
 
-    def get_value(self, item, value):
+    def _get_value_of_setting(self, item, value):
         """
         Get the value of a setting.
 
@@ -72,7 +72,6 @@ class Config():
                 otherwise.
 
         """
-        print attrs
         for attr in attrs:
             if not hasattr(self, attr):
                 return False
@@ -120,7 +119,7 @@ class Config():
                              specie.get('actual_price'))
             body = """
                    %s was at %s %.2f a few minutes ago...
-                   """ % ((specie.get('name'), 
+                   """ % (specie.get('name'), 
                           specie.get('currency'), 
                           specie.get('actual_price'))
         elif action == 'sell':  # For sell
@@ -147,6 +146,5 @@ class Config():
             server.sendmail(self.mail_from, self.mail_to, email_text)
             server.close()
 
-            print 'Email sent!'
-        raise ConnectionError:  
+        except ConnectionError:  
             print 'Something went wrong...'
