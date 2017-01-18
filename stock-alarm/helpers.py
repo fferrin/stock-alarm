@@ -16,6 +16,17 @@ Module containing useful functions needed to run the program.
 """
 
 def get_config_values(parser):
+    """
+    Get and save configuration values from configuration file.
+
+    Args:
+        parser (ConfigParser object): ConfigParser instance used as parser.
+
+    Returns:
+        Config object: Config object with values setting accord to
+            the configuration file.
+
+    """
     section = 'Configuration'
     # Get options from ``Configuration`` section
     options = parser.options(section)
@@ -27,6 +38,17 @@ def get_config_values(parser):
 
 
 def get_bank_values(parser):
+    """
+    Get and save configuration values from configuration file.
+
+    Args:
+        parser (ConfigParser object): ConfigParser instance used as parser.
+
+    Returns:
+        Config object: Config object with values setting accord to
+            the configuration file.
+
+    """
     banks = Banks()
     banks.add_fees(parser.items('Fees'))
     banks.add_tna(parser.items('NIM'))
@@ -34,6 +56,18 @@ def get_bank_values(parser):
 
 
 def get_stock_values(parser, section):
+    """
+    Get and save species values from configuration file.
+
+    Args:
+        parser (ConfigParser object): ConfigParser instance used as parser.
+        section (str): Name of the section in configuration file corresponding
+            to a specie.
+
+    Returns:
+        Stock object: Stock instance with specie's values.
+
+    """
     options = parser.options(section)
     stock_data = {}
     for opt in options:
@@ -42,6 +76,9 @@ def get_stock_values(parser, section):
     
 
 def sleep_until_market_open():
+    """
+    Calculate time left to open market and sleep until then.
+    """
     now = datetime.now()
     weekday = now.weekday()
     if weekday < 5: # If is weekday
@@ -71,6 +108,13 @@ def sleep_until_market_open():
 
 
 def open_market():
+    """
+    Once the market is open, check if it's still open.
+
+    Returns:
+        bool: True if market is open. False otherwise.
+    """
+    now =
     now = datetime.now()
     if 11 < now.hour < 17:
         return True
@@ -78,6 +122,27 @@ def open_market():
 
 
 def calculate_sell_prices(specie, bank):
+    """
+    Calculate sell prices for now to earn at least the same as NIM of the bank.
+
+    If you bought stock, you want to sell it to give you at least the same
+    mnoney that you would earned if you deposit your money in a bank and
+    receive the NIM for it.
+
+    Example:
+        You bought stock at ``$_b`` in ``date_b``. Now, ``days`` days after
+        you want to sell your stocks but you want to know the minimum value
+        at you will gain the same as if you have putted your money in a bank
+        with a NIM ``NIM``. Bank charge you with the ``%_{fee}``%. So, today
+        you have to sell at:
+
+        ``$_s = $_b * (1 + NIM)^{days/365} * \frac{1 + %_{fee}}{1 - %_{fee}}``
+
+    Args:
+        specie (Stock object): Stock instance with specie's values.
+        bank (Bank object): Bank instance with bank's values.
+
+    """
     if specie.has('stock', 'bought_at'):
         buy_date = specie.get('date')
         sell_date = datetime.now()
@@ -88,16 +153,34 @@ def calculate_sell_prices(specie, bank):
 
 
 def notify_with_title(title, message):
+    """
+    Send a message notification to Linux desktop with title.
+    """
     subprocess.Popen(['notify-send', title, message])
     return
 
 
 def notify(message):
+    """
+    Send a message notification to Linux desktop.
+    """
     subprocess.Popen(['notify-send', message])
     return
 
 
 def update_cfg(parser, species, values, file):
+    """
+    Update configuration file with ``sell_at`` and ``actual_price`` values.
+
+    Args:
+        parser (ConfigParser object): ConfigParser instance used as parser.
+        species (list): List of species in configuration file passed in order
+            at witch they appear in the file.
+        values (dict): Dictionary with specie's name as keys and their 
+            corresponding actual price as value.
+        file (str): Name of the configuration file.
+
+    """
     index = 0
     for section in parser.sections():
         if section.startswith('Specie'):
@@ -110,6 +193,13 @@ def update_cfg(parser, species, values, file):
         parser.write(configfile)
 
 def print_log(msg):
+    
+    """
+    Print log message.
+
+    Args:
+        msg: Log message.
+    """
     print """[%s %s]: %s""" % (time.strftime("%d/%m/%Y"),
                                     time.strftime("%H:%M:%S"),
                                     msg)
