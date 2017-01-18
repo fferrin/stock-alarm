@@ -20,7 +20,7 @@ class Stock():
         name (str): Name of the stock.
         actual_price (Optional[float]): Current price of the stock.
         date (Optional[date object]): Date when the stocks were bought.
-        buy_at (Optional[float]): Price at witch stocks were bought.
+        bought_at (Optional[float]): Price at witch stocks were bought.
         stock (Optional[int]): Amount of stocks bought.
         sell_at (Optional[float]): Sell price for witch the gain is equals to
             the bank fixed deposit rates.
@@ -55,7 +55,7 @@ class Stock():
                 setattr(self, item, float(value))
             elif item == 'date':
                 setattr(self, item, datetime.strptime(value, '%d/%m/%Y'))
-            elif item == 'buy_at':
+            elif item == 'bought_at':
                 setattr(self, item, float(value))
             elif item == 'stock':
                 setattr(self, item, int(value))
@@ -111,7 +111,7 @@ class Stock():
         
         Returns:
             str: If ``attr`` is ``stock_market``, ``currency`` or ``name``.
-            float: If ``attr`` is ``actual_price``, ``buy_at``, ``sell_at`` or
+            float: If ``attr`` is ``actual_price``, ``bought_at``, ``sell_at`` or
                 ``alarm_on``.
             date object: If ``attr`` is ``date``.
             int: If ``attr`` is ``stock``.
