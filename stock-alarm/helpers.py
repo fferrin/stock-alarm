@@ -39,14 +39,13 @@ def get_config_values(parser):
 
 def get_bank_values(parser):
     """
-    Get and save configuration values from configuration file.
+    Get and save bank values from configuration file.
 
     Args:
         parser (ConfigParser object): ConfigParser instance used as parser.
 
     Returns:
-        Config object: Config object with values setting accord to
-            the configuration file.
+        Banks object: Banks instance with bank's values.
 
     """
     banks = Banks()
@@ -114,7 +113,6 @@ def open_market():
     Returns:
         bool: True if market is open. False otherwise.
     """
-    now =
     now = datetime.now()
     if 11 < now.hour < 17:
         return True
